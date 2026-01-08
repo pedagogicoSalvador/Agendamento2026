@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento de Reuniões | Colégio Sinodal do Salvador</title>
+  
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --azul-principal: #1a4d7c;
+      --azul-escuro: #0d3558;
+      --azul-claro: #2a6299;
+      --dourado: #c9a227;
+      --dourado-claro: #e6c84a;
+      --cinza-claro: #f7f8fa;
+      --cinza-medio: #e8ebef;
+      --cinza-texto: #4a5568;
+      --branco: #ffffff;
+      --sucesso: #2d7a4f;
+      --erro: #c53030;
+      --alerta: #b7791f;
+      --sombra: 0 4px 20px rgba(26, 77, 124, 0.08);
+      --sombra-hover: 0 8px 30px rgba(26, 77, 124, 0.15);
+      --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--cinza-claro) 0%, var(--cinza-medio) 100%);
+      min-height: 100vh;
+      color: var(--cinza-texto);
+      line-height: 1.6;
+    }
+
+    /* ==================== HEADER ==================== */
+    .header {
+      background: linear-gradient(135deg, var(--azul-principal) 0%, var(--azul-escuro) 100%);
+      color: var(--branco);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--dourado);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .header p {
+      font-size: 1rem;
+      opacity: 0.9;
+      font-weight: 300;
+      margin-top: 0.25rem;
+    }
+
+    /* ==================== CONTAINER PRINCIPAL ==================== */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    /* ==================== CARDS ==================== */
+    .card {
+      background: var(--branco);
+      border-radius: 16px;
+      box-shadow: var(--sombra);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      transition: var(--transicao);
+    }
+
+    .card:hover {
+      box-shadow: var(--sombra-hover);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--azul-principal);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .card-title .step {
+      background: var(--azul-principal);
+      color: var(--branco);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    /* ==================== FORMULÁRIOS ==================== */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--azul-escuro);
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 2px solid var(--cinza-medio);
+      border-radius: 10px;
+      transition: var(--transicao);
+      background: var(--branco);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--azul-claro);
+      box-shadow: 0 0 0 4px rgba(26, 77, 124, 0.1);
+    }
+
+    input::placeholder {
+      color: #a0aec0;
+    }
+
+    /* ==================== SELEÇÃO DE ÁREA ==================== */
+    .areas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .area-btn {
+      padding: 1rem;
+      border: 2px solid var(--cinza-medio);
+      border-radius: 12px;
+      background: var(--branco);
+      cursor: pointer;
+      transition: var(--transicao);
+      text-align: center;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--cinza-texto);
+    }
+
+    .area-btn:hover {
+      border-color: var(--azul-claro);
+      background: var(--cinza-claro);
+    }
+
+    .area-btn.active {
+      border-color: var(--azul-principal);
+      background: var(--azul-principal);
+      color: var(--branco);
+    }
+
+    /* ==================== GRADE DE PROFESSORES ==================== */
+    .professores-container {
+      display: none;
+    }
+
+    .professores-container.show {
+      display: block;
+    }
+
+    .professor-card {
+      border: 2px solid var(--cinza-medio);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: var(--transicao);
+    }
+
+    .professor-card:hover {
+      border-color: var(--azul-claro);
+    }
+
+    .professor-card.has-selection {
+      border-color: var(--azul-principal);
+      background: linear-gradient(135deg, rgba(26, 77, 124, 0.02) 0%, rgba(26, 77, 124, 0.05) 100%);
+    }
+
+    .professor-nome {
+      font-weight: 600;
+      color: var(--azul-escuro);
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .horarios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .horario-btn {
+      padding: 0.625rem 0.5rem;
+      border: 2px solid var(--cinza-medio);
+      border-radius: 8px;
+      background: var(--branco);
+      cursor: pointer;
+      transition: var(--transicao);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--cinza-texto);
+      text-align: center;
+    }
+
+    .horario-btn:hover:not(:disabled) {
+      border-color: var(--azul-claro);
+      background: var(--cinza-claro);
+    }
+
+    .horario-btn.selected {
+      border-color: var(--azul-principal);
+      background: var(--azul-principal);
+      color: var(--branco);
+    }
+
+    .horario-btn:disabled {
+      background: var(--cinza-medio);
+      color: #a0aec0;
+      cursor: not-allowed;
+      border-color: transparent;
+    }
+
+    /* ==================== LISTA DE ESPERA ==================== */
+    .horario-ocupado {
+      position: relative;
+    }
+
+    .horario-btn.ocupado {
+      background: #fee2e2;
+      border-color: #fecaca;
+      color: #991b1b;
+      cursor: pointer;
+      padding: 0.4rem 0.5rem;
+      line-height: 1.2;
+    }
+
+    .horario-btn.ocupado:hover {
+      background: #fecaca;
+      border-color: #f87171;
+    }
+
+    .horario-btn.ocupado .icone-espera {
+      display: block;
+      font-size: 0.65rem;
+      margin-top: 2px;
+    }
+
+    .horario-btn.na-espera {
+      background: #fef3c7;
+      border-color: #fcd34d;
+      color: #92400e;
+    }
+
+    .badge-espera {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--alerta);
+      color: white;
+      font-size: 0.65rem;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .legenda {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: var(--cinza-claro);
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+
+    .legenda-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legenda-cor {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 2px solid;
+    }
+
+    .legenda-cor.disponivel {
+      background: var(--branco);
+      border-color: var(--cinza-medio);
+    }
+
+    .legenda-cor.ocupado {
+      background: #fee2e2;
+      border-color: #fecaca;
+    }
+
+    .legenda-cor.selecionado {
+      background: var(--azul-principal);
+      border-color: var(--azul-principal);
+    }
+
+    .legenda-cor.espera {
+      background: #fef3c7;
+      border-color: #fcd34d;
+    }
+
+    .legenda-dica {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      color: #92400e;
+      margin-top: 0.75rem;
+      margin-bottom: 0;
+    }
+
+    .legenda-dica strong {
+      color: #78350f;
+    }
+
+    /* Modal de lista de espera */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--branco);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal h3 {
+      color: var(--azul-escuro);
+      margin-bottom: 1rem;
+    }
+
+    .modal p {
+      color: var(--cinza-texto);
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-info {
+      background: var(--cinza-claro);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-info strong {
+      color: var(--azul-escuro);
+    }
+
+    .modal-destaque {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 8px;
+      padding: 0.875rem 1rem;
+      font-size: 0.875rem;
+      color: #065f46;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-destaque strong {
+      color: #047857;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .modal-buttons .btn {
+      flex: 1;
+      padding: 0.75rem;
+    }
+
+    /* ==================== BOTÃO CONSULTAR ==================== */
+    .btn-consultar {
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.5);
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 25px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transicao);
+    }
+
+    .btn-consultar:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: white;
+    }
+
+    /* ==================== MODAL CONSULTA ==================== */
+    .consulta-input-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .consulta-input-group input {
+      flex: 1;
+    }
+
+    .consulta-input-group .btn {
+      flex: none;
+      white-space: nowrap;
+    }
+
+    .agendamento-card {
+      background: var(--cinza-claro);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .agendamento-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .agendamento-info h4 {
+      color: var(--azul-escuro);
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .agendamento-info p {
+      color: var(--cinza-texto);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    .btn-cancelar {
+      background: #fee2e2;
+      color: #991b1b;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transicao);
+    }
+
+    .btn-cancelar:hover {
+      background: #fecaca;
+    }
+
+    .btn-cancelar:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .sem-agendamentos {
+      text-align: center;
+      color: #a0aec0;
+      padding: 2rem;
+    }
+
+    /* ==================== COMO FUNCIONA ==================== */
+    .como-funciona {
+      background: linear-gradient(135deg, #f0f7ff 0%, #e8f4f8 100%);
+      border: 1px solid #d0e3f0;
+    }
+
+    .como-funciona-conteudo {
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .como-funciona-conteudo.collapsed {
+      max-height: 0;
+      margin-top: 0;
+    }
+
+    .instrucoes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .instrucao-item {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .instrucao-numero {
+      background: var(--azul-principal);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .instrucao-texto strong {
+      color: var(--azul-escuro);
+      font-size: 0.9rem;
+    }
+
+    .instrucao-texto p {
+      color: var(--cinza-texto);
+      font-size: 0.8rem;
+      margin: 0.25rem 0 0 0;
+    }
+
+    .dica-espera {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 0.875rem 1rem;
+      font-size: 0.875rem;
+      color: #92400e;
+    }
+
+    .dica-espera strong {
+      color: #78350f;
+    }
+
+    /* ==================== RESUMO ==================== */
+    .resumo-container {
+      display: none;
+    }
+
+    .resumo-container.show {
+      display: block;
+    }
+
+    .resumo-lista {
+      background: var(--cinza-claro);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .resumo-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--cinza-medio);
+    }
+
+    .resumo-item:last-child {
+      border-bottom: none;
+    }
+
+    .resumo-area-header {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--azul-principal);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.5rem 0;
+      margin-top: 0.5rem;
+      border-bottom: 1px solid var(--cinza-medio);
+    }
+
+    .resumo-area-header:first-child {
+      margin-top: 0;
+    }
+
+    .resumo-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .resumo-professor {
+      font-weight: 600;
+      color: var(--azul-escuro);
+    }
+
+    .resumo-horario {
+      font-size: 0.875rem;
+      color: var(--cinza-texto);
+    }
+
+    .btn-remover {
+      background: none;
+      border: none;
+      color: var(--erro);
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0.25rem;
+      transition: var(--transicao);
+    }
+
+    .btn-remover:hover {
+      transform: scale(1.2);
+    }
+
+    .resumo-vazio {
+      text-align: center;
+      color: #a0aec0;
+      padding: 1rem;
+    }
+
+    /* ==================== BADGE DA ÁREA ==================== */
+    .area-badge {
+      background: var(--cinza-claro);
+      color: var(--azul-principal);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-left: auto;
+    }
+
+    .btn-outra-area {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--cinza-medio);
+    }
+
+    /* ==================== BOTÕES ==================== */
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transicao);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--azul-principal) 0%, var(--azul-claro) 100%);
+      color: var(--branco);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(26, 77, 124, 0.3);
+    }
+
+    .btn-primary:disabled {
+      background: var(--cinza-medio);
+      color: #a0aec0;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--cinza-claro);
+      color: var(--cinza-texto);
+      border: 2px solid var(--cinza-medio);
+    }
+
+    .btn-secondary:hover {
+      background: var(--cinza-medio);
+    }
+
+    /* ==================== MENSAGENS ==================== */
+    .mensagem {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      display: none;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .mensagem.show {
+      display: flex;
+    }
+
+    .mensagem-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .mensagem-texto {
+      flex: 1;
+    }
+
+    .mensagem.sucesso {
+      background: linear-gradient(135deg, rgba(45, 122, 79, 0.1) 0%, rgba(45, 122, 79, 0.05) 100%);
+      border: 1px solid rgba(45, 122, 79, 0.2);
+      color: var(--sucesso);
+    }
+
+    .mensagem.erro {
+      background: linear-gradient(135deg, rgba(197, 48, 48, 0.1) 0%, rgba(197, 48, 48, 0.05) 100%);
+      border: 1px solid rgba(197, 48, 48, 0.2);
+      color: var(--erro);
+    }
+
+    .mensagem.alerta {
+      background: linear-gradient(135deg, rgba(183, 121, 31, 0.1) 0%, rgba(183, 121, 31, 0.05) 100%);
+      border: 1px solid rgba(183, 121, 31, 0.2);
+      color: var(--alerta);
+    }
+
+    /* ==================== LOADING ==================== */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: var(--azul-principal);
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--cinza-medio);
+      border-top-color: var(--azul-principal);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.75rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ==================== FOOTER ==================== */
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: #a0aec0;
+      font-size: 0.875rem;
+    }
+
+    /* ==================== TELA DE SUCESSO ==================== */
+    .sucesso-container {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .sucesso-container.show {
+      display: block;
+    }
+
+    .sucesso-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--sucesso) 0%, #38a169 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.5rem;
+      color: var(--branco);
+    }
+
+    .sucesso-container h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.5rem;
+      color: var(--azul-escuro);
+      margin-bottom: 0.75rem;
+    }
+
+    .sucesso-container p {
+      color: var(--cinza-texto);
+      margin-bottom: 2rem;
+    }
+
+    /* ==================== RESPONSIVO ==================== */
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.4rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .horarios-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo-area">
+        <div class="logo-icon">🎓</div>
+        <h1>Colégio Sinodal do Salvador</h1>
+      </div>
+      <p>Sistema de Agendamento de Reuniões</p>
+      <p style="margin-top: 0.5rem; font-weight: 600; background: rgba(255,255,255,0.15); display: inline-block; padding: 0.25rem 1rem; border-radius: 20px;">
+        📅 05 de janeiro de 2026
+      </p>
+      <div style="margin-top: 1rem;">
+        <button type="button" class="btn-consultar" onclick="abrirConsulta()">
+          Consultar / Cancelar meus agendamentos
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- MENSAGEM GLOBAL -->
+    <div id="mensagem" class="mensagem">
+      <span class="mensagem-icon"></span>
+      <span class="mensagem-texto"></span>
+    </div>
+
+    <!-- COMO FUNCIONA -->
+    <div class="card como-funciona">
+      <h2 class="card-title" style="cursor: pointer;" onclick="toggleComoFunciona()">
+        <span style="font-size: 1.25rem;">💡</span>
+        Como funciona o agendamento
+        <span id="setaComoFunciona" style="margin-left: auto; transition: transform 0.3s;">▼</span>
+      </h2>
+      <div id="conteudoComoFunciona" class="como-funciona-conteudo">
+        <div class="instrucoes-grid">
+          <div class="instrucao-item">
+            <div class="instrucao-numero">1</div>
+            <div class="instrucao-texto">
+              <strong>Preencha seus dados</strong>
+              <p>Nome completo e e-mail para contato</p>
+            </div>
+          </div>
+          <div class="instrucao-item">
+            <div class="instrucao-numero">2</div>
+            <div class="instrucao-texto">
+              <strong>Escolha a área</strong>
+              <p>Selecione a área de conhecimento do professor</p>
+            </div>
+          </div>
+          <div class="instrucao-item">
+            <div class="instrucao-numero">3</div>
+            <div class="instrucao-texto">
+              <strong>Selecione professor e horário</strong>
+              <p>Clique no horário desejado para cada professor</p>
+            </div>
+          </div>
+          <div class="instrucao-item">
+            <div class="instrucao-numero">4</div>
+            <div class="instrucao-texto">
+              <strong>Confirme</strong>
+              <p>Revise e confirme seus agendamentos</p>
+            </div>
+          </div>
+        </div>
+        <div class="dica-espera">
+          <strong>⏳ Horário ocupado?</strong> Não se preocupe! Clique no horário em vermelho para entrar na <strong>lista de espera</strong>. 
+          Se alguém cancelar, você será notificado por e-mail automaticamente.
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULÁRIO PRINCIPAL -->
+    <div id="formContainer">
+      
+      <!-- CARD 1: IDENTIFICAÇÃO -->
+      <div class="card">
+        <h2 class="card-title">
+          <span class="step">1</span>
+          Identificação
+        </h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nome">Seu nome completo</label>
+            <input type="text" id="nome" placeholder="Digite seu nome" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="email">Seu e-mail</label>
+            <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: ÁREA -->
+      <div class="card">
+        <h2 class="card-title">
+          <span class="step">2</span>
+          Escolha a Área de Conhecimento
+        </h2>
+        <div id="areasContainer" class="areas-grid">
+          <div class="loading">
+            <div class="spinner"></div>
+            <span>Carregando áreas...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: PROFESSORES E HORÁRIOS -->
+      <div id="professoresCard" class="card professores-container">
+        <h2 class="card-title">
+          <span class="step">3</span>
+          Escolha Professor e Horário
+          <span id="areaAtual" class="area-badge"></span>
+        </h2>
+        <div id="professoresContainer">
+          <!-- Preenchido via JavaScript -->
+        </div>
+        <div class="btn-outra-area">
+          <button type="button" class="btn btn-secondary" onclick="voltarParaAreas()">
+            ← Escolher outra área
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD 4: RESUMO -->
+      <div id="resumoCard" class="card resumo-container">
+        <h2 class="card-title">
+          <span class="step">4</span>
+          Confirme seus Agendamentos
+        </h2>
+        <div id="resumoLista" class="resumo-lista">
+          <div class="resumo-vazio">Nenhum horário selecionado</div>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" onclick="limparSelecao()">
+            Limpar Seleção
+          </button>
+          <button type="button" id="btnConfirmar" class="btn btn-primary" onclick="confirmarAgendamento()" disabled>
+            Confirmar Agendamento
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA DE SUCESSO -->
+    <div id="sucessoContainer" class="card sucesso-container">
+      <div class="sucesso-icon">✓</div>
+      <h2>Agendamento Confirmado!</h2>
+      <p>Você receberá um e-mail com os detalhes do seu agendamento.</p>
+      <button type="button" class="btn btn-primary" onclick="novoAgendamento()">
+        Fazer Novo Agendamento
+      </button>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 Colégio Sinodal do Salvador · Todos os direitos reservados</p>
+  </footer>
+
+  <!-- MODAL LISTA DE ESPERA -->
+  <div id="modalEspera" class="modal-overlay" onclick="fecharModalEspera(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h3>⏳ Entrar na Lista de Espera</h3>
+      <p>Este horário já foi reservado por outra pessoa. Mas você pode entrar na lista de espera!</p>
+      <div class="modal-info">
+        <div><strong>Professor(a):</strong> <span id="modalProfessor"></span></div>
+        <div><strong>Horário:</strong> <span id="modalHorario"></span></div>
+        <div id="modalQtdEspera" style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--alerta);"></div>
+      </div>
+      <div class="modal-destaque">
+        📧 Se o horário ficar disponível, você receberá um <strong>e-mail automático</strong> avisando para fazer seu agendamento.
+      </div>
+      <div class="modal-buttons">
+        <button type="button" class="btn btn-secondary" onclick="fecharModalEspera()">Não, obrigado</button>
+        <button type="button" id="btnEntrarEspera" class="btn btn-primary" onclick="confirmarListaEspera()">
+          Sim, entrar na lista
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CONSULTA / CANCELAMENTO -->
+  <div id="modalConsulta" class="modal-overlay" onclick="fecharModalConsulta(event)">
+    <div class="modal" style="max-width: 500px;" onclick="event.stopPropagation()">
+      <h3>Meus Agendamentos</h3>
+      <p>Digite seu e-mail para consultar e cancelar seus agendamentos.</p>
+      
+      <div class="consulta-input-group">
+        <input type="email" id="emailConsulta" placeholder="seu@email.com">
+        <button type="button" class="btn btn-primary" onclick="buscarAgendamentos()">Buscar</button>
+      </div>
+      
+      <div id="resultadoConsulta">
+        <!-- Preenchido via JavaScript -->
+      </div>
+      
+      <div style="margin-top: 1.5rem; text-align: right;">
+        <button type="button" class="btn btn-secondary" onclick="fecharModalConsulta()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== CONFIGURAÇÃO ====================
+    
+    // ⚠️ SUBSTITUA PELA URL DO SEU APPS SCRIPT PUBLICADO
+    const API_URL = 'https://script.google.com/macros/s/AKfycbw-jX0CwxmpLz3LRtyUbK53C4QJRRrpp3Rwy3wYgsOMlzDLt_8TL3uamPeT-PcudcYj/exec';
+
+    // ==================== ESTADO DA APLICAÇÃO ====================
+    
+    let state = {
+      nome: '',
+      email: '',
+      areaSelecionada: null,
+      agendamentos: [], // { professor, horario, horarioTexto, area }
+      listaEspera: [],  // { professor, horario, horarioTexto, area }
+      disponibilidade: {},
+      horarios: {},
+      modalEspera: {
+        professor: null,
+        horario: null,
+        horarioTexto: null,
+        qtdEspera: 0
+      }
+    };
+
+    // ==================== INICIALIZAÇÃO ====================
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+      await carregarHorarios();
+      await carregarAreas();
+      
+      // Listeners para validação
+      document.getElementById('nome').addEventListener('input', validarFormulario);
+      document.getElementById('email').addEventListener('input', validarFormulario);
+    });
+
+    // ==================== TOGGLE COMO FUNCIONA ====================
+    
+    function toggleComoFunciona() {
+      const conteudo = document.getElementById('conteudoComoFunciona');
+      const seta = document.getElementById('setaComoFunciona');
+      
+      if (conteudo.classList.contains('collapsed')) {
+        conteudo.classList.remove('collapsed');
+        conteudo.style.maxHeight = conteudo.scrollHeight + 'px';
+        seta.style.transform = 'rotate(0deg)';
+      } else {
+        conteudo.style.maxHeight = conteudo.scrollHeight + 'px';
+        setTimeout(() => {
+          conteudo.classList.add('collapsed');
+          conteudo.style.maxHeight = '0';
+        }, 10);
+        seta.style.transform = 'rotate(-90deg)';
+      }
+    }
+
+    // ==================== FUNÇÕES DE API (CORRIGIDO PARA CORS) ====================
+    
+    async function apiCall(acao, params = {}) {
+      try {
+        // Monta URL com todos os parâmetros
+        const url = new URL(API_URL);
+        url.searchParams.append('acao', acao);
+        
+        Object.entries(params).forEach(([key, value]) => {
+          url.searchParams.append(key, value);
+        });
+        
+        console.log('Chamando API:', url.toString());
+        
+        // Usa fetch simples sem headers customizados (evita preflight CORS)
+        const response = await fetch(url.toString(), {
+          method: 'GET',
+          redirect: 'follow'
+        });
+        
+        const text = await response.text();
+        console.log('Resposta bruta:', text);
+        
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error('Erro ao parsear JSON:', e);
+          return { sucesso: false, erro: 'Resposta inválida do servidor' };
+        }
+      } catch (error) {
+        console.error('Erro na API:', error);
+        return { sucesso: false, erro: 'Erro de conexão: ' + error.message };
+      }
+    }
+
+    // Para enviar dados complexos, usamos GET com dados encodados na URL
+    async function apiCallComDados(acao, dados) {
+      const dadosEncoded = encodeURIComponent(JSON.stringify(dados));
+      return await apiCall(acao, { dados: dadosEncoded });
+    }
+
+    // ==================== CARREGAMENTO DE DADOS ====================
+    
+    async function carregarHorarios() {
+      const result = await apiCall('getHorarios');
+      if (result.sucesso) {
+        state.horarios = result.horarios;
+      }
+    }
+
+    async function carregarAreas() {
+      const container = document.getElementById('areasContainer');
+      const result = await apiCall('getAreas');
+      
+      if (result.sucesso) {
+        container.innerHTML = result.areas.map(area => `
+          <button type="button" class="area-btn" onclick="selecionarArea('${area}')">
+            ${area}
+          </button>
+        `).join('');
+      } else {
+        container.innerHTML = `
+          <p style="color: var(--erro); text-align: center;">
+            Erro ao carregar áreas: ${result.erro || 'Verifique a URL da API'}
+          </p>
+          <p style="text-align: center; margin-top: 1rem;">
+            <button class="btn btn-secondary" onclick="carregarAreas()">Tentar novamente</button>
+          </p>
+        `;
+      }
+    }
+
+    async function selecionarArea(area) {
+      // Atualizar visual
+      document.querySelectorAll('.area-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.trim() === area);
+      });
+      
+      state.areaSelecionada = area;
+      
+      // Mostrar nome da área no badge
+      document.getElementById('areaAtual').textContent = area;
+      
+      // Mostrar loading
+      const container = document.getElementById('professoresContainer');
+      container.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <span>Carregando professores...</span>
+        </div>
+      `;
+      document.getElementById('professoresCard').classList.add('show');
+      
+      // Buscar disponibilidade
+      const result = await apiCall('getDisponibilidade', { area: area });
+      
+      if (result.sucesso) {
+        state.disponibilidade = result.disponibilidade;
+        state.horarios = result.horarios;
+        renderizarProfessores(result.professores, result.disponibilidade);
+        
+        // Mostrar resumo se já houver agendamentos
+        if (state.agendamentos.length > 0) {
+          document.getElementById('resumoCard').classList.add('show');
+        }
+      } else {
+        container.innerHTML = `<p style="color: var(--erro); text-align: center;">Erro: ${result.erro}</p>`;
+      }
+    }
+
+    function voltarParaAreas() {
+      // Esconder card de professores
+      document.getElementById('professoresCard').classList.remove('show');
+      
+      // Limpar seleção de área (visual)
+      document.querySelectorAll('.area-btn').forEach(btn => btn.classList.remove('active'));
+      
+      // Limpar estado da área atual (mas manter agendamentos!)
+      state.areaSelecionada = null;
+      state.disponibilidade = {};
+      
+      // Rolar para as áreas
+      document.getElementById('areasContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ==================== RENDERIZAÇÃO ====================
+    
+    function renderizarProfessores(professores, disponibilidade) {
+      const container = document.getElementById('professoresContainer');
+      
+      if (professores.length === 0) {
+        container.innerHTML = `<p style="text-align: center; color: #a0aec0;">Nenhum professor cadastrado nesta área.</p>`;
+        return;
+      }
+      
+      // Legenda
+      let html = `
+        <div class="legenda">
+          <div class="legenda-item">
+            <div class="legenda-cor disponivel"></div>
+            <span>Disponível</span>
+          </div>
+          <div class="legenda-item">
+            <div class="legenda-cor selecionado"></div>
+            <span>Selecionado</span>
+          </div>
+          <div class="legenda-item">
+            <div class="legenda-cor ocupado"></div>
+            <span>Ocupado - clique para lista de espera</span>
+          </div>
+          <div class="legenda-item">
+            <div class="legenda-cor espera"></div>
+            <span>Você na lista de espera</span>
+          </div>
+        </div>
+        <p class="legenda-dica">
+          💡 <strong>Dica:</strong> Horários em vermelho estão ocupados, mas você pode clicar neles para entrar na lista de espera!
+        </p>
+      `;
+      
+      html += professores.map(prof => {
+        const horarios = Object.entries(state.horarios).map(([letra, horarioTexto]) => {
+          const info = disponibilidade[prof] ? disponibilidade[prof][letra] : null;
+          const selecionado = state.agendamentos.some(a => a.professor === prof && a.horario === letra);
+          const naEspera = state.listaEspera.some(a => a.professor === prof && a.horario === letra);
+          const disponivel = info ? info.disponivel : true;
+          const qtdEspera = info ? (info.listaEspera || 0) : 0;
+          
+          if (selecionado) {
+            return `
+              <button type="button" 
+                class="horario-btn selected" 
+                onclick="toggleHorario('${prof.replace(/'/g, "\\'")}', '${letra}', '${horarioTexto}')">
+                ${horarioTexto}
+              </button>
+            `;
+          } else if (naEspera) {
+            return `
+              <div class="horario-ocupado">
+                <button type="button" class="horario-btn na-espera" disabled>
+                  ${horarioTexto}
+                </button>
+              </div>
+            `;
+          } else if (!disponivel) {
+            return `
+              <div class="horario-ocupado">
+                <button type="button" 
+                  class="horario-btn ocupado" 
+                  onclick="abrirModalEspera('${prof.replace(/'/g, "\\'")}', '${letra}', '${horarioTexto}', ${qtdEspera})"
+                  title="Clique para entrar na lista de espera">
+                  ${horarioTexto}
+                  <span class="icone-espera">⏳</span>
+                </button>
+                ${qtdEspera > 0 ? `<span class="badge-espera">${qtdEspera}</span>` : ''}
+              </div>
+            `;
+          } else {
+            return `
+              <button type="button" 
+                class="horario-btn" 
+                onclick="toggleHorario('${prof.replace(/'/g, "\\'")}', '${letra}', '${horarioTexto}')">
+                ${horarioTexto}
+              </button>
+            `;
+          }
+        }).join('');
+        
+        const temSelecao = state.agendamentos.some(a => a.professor === prof);
+        
+        return `
+          <div class="professor-card ${temSelecao ? 'has-selection' : ''}">
+            <div class="professor-nome">${prof}</div>
+            <div class="horarios-grid">
+              ${horarios}
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      container.innerHTML = html;
+      
+      // Mostrar card de resumo
+      document.getElementById('resumoCard').classList.add('show');
+      atualizarResumo();
+    }
+
+    function atualizarResumo() {
+      const container = document.getElementById('resumoLista');
+      
+      const temAgendamentos = state.agendamentos.length > 0;
+      const temEspera = state.listaEspera.length > 0;
+      
+      if (!temAgendamentos && !temEspera) {
+        container.innerHTML = `<div class="resumo-vazio">Nenhum horário selecionado</div>`;
+        document.getElementById('resumoCard').classList.remove('show');
+      } else {
+        let html = '';
+        
+        // Agendamentos confirmados
+        if (temAgendamentos) {
+          // Agrupar por área
+          const porArea = {};
+          state.agendamentos.forEach(ag => {
+            const area = ag.area || 'Outros';
+            if (!porArea[area]) porArea[area] = [];
+            porArea[area].push(ag);
+          });
+          
+          html += '<div style="font-weight: 600; color: var(--sucesso); margin-bottom: 0.5rem;">✓ Agendamentos</div>';
+          
+          Object.entries(porArea).forEach(([area, ags]) => {
+            html += `<div class="resumo-area-header">${area}</div>`;
+            ags.forEach((ag) => {
+              const globalIndex = state.agendamentos.findIndex(a => a.professor === ag.professor && a.horario === ag.horario);
+              html += `
+                <div class="resumo-item">
+                  <div class="resumo-info">
+                    <span class="resumo-professor">${ag.professor}</span>
+                    <span class="resumo-horario">🕐 ${ag.horarioTexto}</span>
+                  </div>
+                  <button type="button" class="btn-remover" onclick="removerAgendamento(${globalIndex})">✕</button>
+                </div>
+              `;
+            });
+          });
+        }
+        
+        // Lista de espera
+        if (temEspera) {
+          if (temAgendamentos) {
+            html += '<div style="border-top: 2px solid var(--cinza-medio); margin: 1rem 0;"></div>';
+          }
+          
+          html += '<div style="font-weight: 600; color: var(--alerta); margin-bottom: 0.5rem;">⏳ Lista de Espera</div>';
+          
+          // Agrupar por área
+          const porAreaEspera = {};
+          state.listaEspera.forEach(ag => {
+            const area = ag.area || 'Outros';
+            if (!porAreaEspera[area]) porAreaEspera[area] = [];
+            porAreaEspera[area].push(ag);
+          });
+          
+          Object.entries(porAreaEspera).forEach(([area, ags]) => {
+            html += `<div class="resumo-area-header">${area}</div>`;
+            ags.forEach((ag) => {
+              html += `
+                <div class="resumo-item" style="opacity: 0.8;">
+                  <div class="resumo-info">
+                    <span class="resumo-professor">${ag.professor}</span>
+                    <span class="resumo-horario">🕐 ${ag.horarioTexto}</span>
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--alerta);">aguardando</span>
+                </div>
+              `;
+            });
+          });
+        }
+        
+        container.innerHTML = html;
+        document.getElementById('resumoCard').classList.add('show');
+      }
+      
+      validarFormulario();
+    }
+
+    // ==================== INTERAÇÕES ====================
+    
+    function toggleHorario(professor, horario, horarioTexto) {
+      const index = state.agendamentos.findIndex(a => a.professor === professor && a.horario === horario);
+      
+      if (index >= 0) {
+        // Remover
+        state.agendamentos.splice(index, 1);
+      } else {
+        // Adicionar (verificar se já tem horário com esse professor)
+        const existente = state.agendamentos.findIndex(a => a.professor === professor);
+        if (existente >= 0) {
+          state.agendamentos[existente] = { 
+            professor, 
+            horario, 
+            horarioTexto,
+            area: state.areaSelecionada 
+          };
+        } else {
+          state.agendamentos.push({ 
+            professor, 
+            horario, 
+            horarioTexto,
+            area: state.areaSelecionada 
+          });
+        }
+      }
+      
+      // Re-renderizar
+      if (state.areaSelecionada && Object.keys(state.disponibilidade).length > 0) {
+        renderizarProfessores(
+          Object.keys(state.disponibilidade), 
+          state.disponibilidade
+        );
+      }
+      
+      // Mostrar resumo
+      document.getElementById('resumoCard').classList.add('show');
+    }
+
+    function removerAgendamento(index) {
+      const removido = state.agendamentos[index];
+      state.agendamentos.splice(index, 1);
+      
+      // Se estamos vendo a área do professor removido, re-renderizar
+      if (state.areaSelecionada && Object.keys(state.disponibilidade).length > 0) {
+        // Verificar se o professor removido está na área atual
+        if (state.disponibilidade[removido.professor]) {
+          renderizarProfessores(
+            Object.keys(state.disponibilidade), 
+            state.disponibilidade
+          );
+        } else {
+          atualizarResumo();
+        }
+      } else {
+        atualizarResumo();
+      }
+    }
+
+    function limparSelecao() {
+      state.agendamentos = [];
+      
+      if (state.areaSelecionada && Object.keys(state.disponibilidade).length > 0) {
+        renderizarProfessores(
+          Object.keys(state.disponibilidade), 
+          state.disponibilidade
+        );
+      }
+      
+      atualizarResumo();
+    }
+
+    // ==================== VALIDAÇÃO ====================
+    
+    function validarFormulario() {
+      state.nome = document.getElementById('nome').value.trim();
+      state.email = document.getElementById('email').value.trim();
+      
+      const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email);
+      const formValido = state.nome.length >= 3 && emailValido && state.agendamentos.length > 0;
+      
+      document.getElementById('btnConfirmar').disabled = !formValido;
+    }
+
+    // ==================== CONFIRMAÇÃO ====================
+    
+    async function confirmarAgendamento() {
+      const btn = document.getElementById('btnConfirmar');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;margin-right:8px;border-width:2px;"></div> Processando...';
+      
+      const dados = {
+        nome: state.nome,
+        email: state.email,
+        agendamentos: state.agendamentos.map(a => ({
+          professor: a.professor,
+          horario: a.horario
+        }))
+      };
+      
+      // Usa GET com dados encodados (contorna CORS)
+      const result = await apiCallComDados('agendar', dados);
+      
+      if (result.sucesso) {
+        // Mostrar tela de sucesso
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('sucessoContainer').classList.add('show');
+        
+        if (result.conflitos && result.conflitos.length > 0) {
+          mostrarMensagem('alerta', `Alguns horários já estavam ocupados: ${result.conflitos.join(', ')}`);
+        }
+      } else {
+        mostrarMensagem('erro', result.erro || 'Erro ao realizar agendamento');
+        btn.disabled = false;
+        btn.innerHTML = 'Confirmar Agendamento';
+      }
+    }
+
+    function novoAgendamento() {
+      // Resetar estado
+      state.agendamentos = [];
+      state.listaEspera = [];
+      state.areaSelecionada = null;
+      state.disponibilidade = {};
+      
+      // Resetar formulário
+      document.getElementById('nome').value = '';
+      document.getElementById('email').value = '';
+      
+      // Resetar visuais
+      document.querySelectorAll('.area-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('professoresCard').classList.remove('show');
+      document.getElementById('resumoCard').classList.remove('show');
+      document.getElementById('professoresContainer').innerHTML = '';
+      
+      // Mostrar formulário
+      document.getElementById('formContainer').style.display = 'block';
+      document.getElementById('sucessoContainer').classList.remove('show');
+      
+      // Esconder mensagem
+      document.getElementById('mensagem').classList.remove('show');
+    }
+
+    // ==================== MENSAGENS ====================
+    
+    function mostrarMensagem(tipo, texto) {
+      const el = document.getElementById('mensagem');
+      el.className = `mensagem ${tipo} show`;
+      
+      const icons = { sucesso: '✓', erro: '✕', alerta: '⚠' };
+      el.querySelector('.mensagem-icon').textContent = icons[tipo] || '';
+      el.querySelector('.mensagem-texto').textContent = texto;
+      
+      // Auto-hide após 8 segundos
+      setTimeout(() => {
+        el.classList.remove('show');
+      }, 8000);
+    }
+
+    // ==================== LISTA DE ESPERA ====================
+    
+    function abrirModalEspera(professor, horario, horarioTexto, qtdEspera) {
+      // Verificar se já preencheu nome e email
+      state.nome = document.getElementById('nome').value.trim();
+      state.email = document.getElementById('email').value.trim();
+      
+      if (!state.nome || state.nome.length < 3) {
+        mostrarMensagem('alerta', 'Preencha seu nome antes de entrar na lista de espera');
+        document.getElementById('nome').focus();
+        return;
+      }
+      
+      const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email);
+      if (!emailValido) {
+        mostrarMensagem('alerta', 'Preencha um e-mail válido antes de entrar na lista de espera');
+        document.getElementById('email').focus();
+        return;
+      }
+      
+      // Salvar dados no state
+      state.modalEspera = { professor, horario, horarioTexto, qtdEspera };
+      
+      // Preencher modal
+      document.getElementById('modalProfessor').textContent = professor;
+      document.getElementById('modalHorario').textContent = horarioTexto;
+      
+      const qtdEl = document.getElementById('modalQtdEspera');
+      if (qtdEspera > 0) {
+        qtdEl.textContent = `${qtdEspera} pessoa(s) já na lista de espera`;
+        qtdEl.style.display = 'block';
+      } else {
+        qtdEl.style.display = 'none';
+      }
+      
+      // Mostrar modal
+      document.getElementById('modalEspera').classList.add('show');
+    }
+    
+    function fecharModalEspera(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('modalEspera').classList.remove('show');
+    }
+    
+    async function confirmarListaEspera() {
+      const btn = document.getElementById('btnEntrarEspera');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;margin-right:8px;border-width:2px;"></div> Aguarde...';
+      
+      const dados = {
+        nome: state.nome,
+        email: state.email,
+        professor: state.modalEspera.professor,
+        horario: state.modalEspera.horario
+      };
+      
+      const result = await apiCallComDados('entrarListaEspera', dados);
+      
+      if (result.sucesso) {
+        // Adicionar ao estado local
+        state.listaEspera.push({
+          professor: state.modalEspera.professor,
+          horario: state.modalEspera.horario,
+          horarioTexto: state.modalEspera.horarioTexto,
+          area: state.areaSelecionada
+        });
+        
+        fecharModalEspera();
+        mostrarMensagem('sucesso', result.mensagem);
+        
+        // Re-renderizar para mostrar que está na lista
+        if (state.areaSelecionada && Object.keys(state.disponibilidade).length > 0) {
+          renderizarProfessores(
+            Object.keys(state.disponibilidade), 
+            state.disponibilidade
+          );
+        }
+      } else {
+        mostrarMensagem('erro', result.erro);
+      }
+      
+      btn.disabled = false;
+      btn.innerHTML = 'Entrar na Lista';
+    }
+
+    // ==================== CONSULTA E CANCELAMENTO ====================
+    
+    function abrirConsulta() {
+      document.getElementById('emailConsulta').value = '';
+      document.getElementById('resultadoConsulta').innerHTML = '';
+      document.getElementById('modalConsulta').classList.add('show');
+    }
+    
+    function fecharModalConsulta(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('modalConsulta').classList.remove('show');
+    }
+    
+    async function buscarAgendamentos() {
+      const email = document.getElementById('emailConsulta').value.trim();
+      const container = document.getElementById('resultadoConsulta');
+      
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        container.innerHTML = '<p style="color: var(--erro);">Digite um e-mail válido.</p>';
+        return;
+      }
+      
+      container.innerHTML = '<div class="loading"><div class="spinner"></div><span>Buscando...</span></div>';
+      
+      const result = await apiCall('getMeusAgendamentos', { email: email });
+      
+      if (result.sucesso) {
+        if (result.agendamentos.length === 0) {
+          container.innerHTML = '<div class="sem-agendamentos">Nenhum agendamento encontrado para este e-mail.</div>';
+        } else {
+          container.innerHTML = result.agendamentos.map(ag => `
+            <div class="agendamento-card" id="ag-${ag.professor.replace(/\s/g, '')}-${ag.horarioLetra}">
+              <div class="agendamento-info">
+                <h4>${ag.professor}</h4>
+                <p>Horário: ${ag.horario}</p>
+              </div>
+              <button type="button" class="btn-cancelar" onclick="cancelarMeuAgendamento('${email}', '${ag.professor.replace(/'/g, "\\'")}', '${ag.horarioLetra}')">
+                Cancelar
+              </button>
+            </div>
+          `).join('');
+        }
+      } else {
+        container.innerHTML = `<p style="color: var(--erro);">Erro: ${result.erro}</p>`;
+      }
+    }
+    
+    async function cancelarMeuAgendamento(email, professor, horario) {
+      if (!confirm(`Tem certeza que deseja cancelar o agendamento com ${professor}?`)) {
+        return;
+      }
+      
+      const cardId = `ag-${professor.replace(/\s/g, '')}-${horario}`;
+      const card = document.getElementById(cardId);
+      const btn = card.querySelector('.btn-cancelar');
+      
+      btn.disabled = true;
+      btn.textContent = 'Cancelando...';
+      
+      const result = await apiCall('cancelarAgendamento', { 
+        email: email, 
+        professor: professor, 
+        horario: horario 
+      });
+      
+      if (result.sucesso) {
+        card.style.opacity = '0.5';
+        card.innerHTML = `
+          <div class="agendamento-info">
+            <h4 style="text-decoration: line-through;">${professor}</h4>
+            <p style="color: var(--sucesso);">Cancelado com sucesso</p>
+          </div>
+        `;
+        
+        // Atualizar a disponibilidade se estiver visualizando a mesma área
+        if (state.areaSelecionada) {
+          setTimeout(() => selecionarArea(state.areaSelecionada), 1000);
+        }
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Cancelar';
+        alert('Erro ao cancelar: ' + result.erro);
+      }
+    }
+  </script>
+
+</body>
+</html>
