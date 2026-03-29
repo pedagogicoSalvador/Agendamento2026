@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendamento de Reuniões | Colégio Sinodal do Salvador</title>
   
-  <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
@@ -221,7 +220,7 @@
       color: var(--cinza-texto);
     }
 
-    .area-btn:hover {
+    .area-btn:hover:not(:disabled) {
       border-color: var(--azul-claro);
       background: var(--cinza-claro);
     }
@@ -230,6 +229,11 @@
       border-color: var(--azul-principal);
       background: var(--azul-principal);
       color: var(--branco);
+    }
+
+    .area-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     /* ==================== GRADE DE PROFESSORES ==================== */
@@ -409,7 +413,7 @@
       color: #78350f;
     }
 
-    /* Modal de lista de espera */
+    /* Modal base */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -480,6 +484,11 @@
     .modal-buttons .btn {
       flex: 1;
       padding: 0.75rem;
+    }
+
+    /* Modal de confirmação (substitui confirm() nativo) */
+    #modalConfirmacao .modal {
+      max-width: 380px;
     }
 
     /* ==================== BOTÃO CONSULTAR ==================== */
@@ -553,6 +562,7 @@
       font-weight: 500;
       cursor: pointer;
       transition: var(--transicao);
+      flex-shrink: 0;
     }
 
     .btn-cancelar:hover {
@@ -576,14 +586,15 @@
       border: 1px solid #d0e3f0;
     }
 
+    /* FIX: max-height inicial alto para animação funcionar corretamente */
     .como-funciona-conteudo {
       overflow: hidden;
-      transition: max-height 0.3s ease;
+      transition: max-height 0.35s ease;
+      max-height: 2000px;
     }
 
     .como-funciona-conteudo.collapsed {
       max-height: 0;
-      margin-top: 0;
     }
 
     .instrucoes-grid {
@@ -782,6 +793,16 @@
       background: var(--cinza-medio);
     }
 
+    .btn-perigo {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 2px solid #fecaca;
+    }
+
+    .btn-perigo:hover {
+      background: #fecaca;
+    }
+
     /* ==================== MENSAGENS ==================== */
     .mensagem {
       padding: 1rem 1.25rem;
@@ -895,15 +916,15 @@
       .header h1 {
         font-size: 1.4rem;
       }
-      
+
       .card {
         padding: 1.5rem;
       }
-      
+
       .horarios-grid {
         grid-template-columns: repeat(3, 1fr);
       }
-      
+
       .btn-group {
         flex-direction: column;
       }
@@ -919,7 +940,8 @@
         <div class="logo-icon">🎓</div>
         <h1>Colégio Sinodal do Salvador</h1>
       </div>
-      <p>Agendamentocom Professores </p>
+      <!-- FIX: corrigido espaço em "Agendamento com Professores" -->
+      <p>Agendamento com Professores</p>
       <p style="margin-top: 0.5rem; font-weight: 600; background: rgba(255,255,255,0.15); display: inline-block; padding: 0.25rem 1rem; border-radius: 20px;">
         📅 20 de abril de 2026
       </p>
@@ -932,20 +954,21 @@
   </header>
 
   <main class="container">
-    
+
     <!-- MENSAGEM GLOBAL -->
-    <div id="mensagem" class="mensagem">
+    <div id="mensagem" class="mensagem" role="alert" aria-live="polite">
       <span class="mensagem-icon"></span>
       <span class="mensagem-texto"></span>
     </div>
 
     <!-- COMO FUNCIONA -->
     <div class="card como-funciona">
-      <h2 class="card-title" style="cursor: pointer;" onclick="toggleComoFunciona()">
+      <h2 class="card-title" style="cursor: pointer;" onclick="toggleComoFunciona()" aria-expanded="true" aria-controls="conteudoComoFunciona">
         <span style="font-size: 1.25rem;">💡</span>
         Como funciona o agendamento
         <span id="setaComoFunciona" style="margin-left: auto; transition: transform 0.3s;">▼</span>
       </h2>
+      <!-- FIX: classe collapsed removida do HTML — começa aberto, sem transição errada -->
       <div id="conteudoComoFunciona" class="como-funciona-conteudo">
         <div class="instrucoes-grid">
           <div class="instrucao-item">
@@ -978,7 +1001,7 @@
           </div>
         </div>
         <div class="dica-espera">
-          <strong>⏳ Horário ocupado?</strong> Não se preocupe! Clique no horário em vermelho para entrar na <strong>lista de espera</strong>. 
+          <strong>⏳ Horário ocupado?</strong> Não se preocupe! Clique no horário em vermelho para entrar na <strong>lista de espera</strong>.
           Se alguém cancelar, você será notificado por e-mail automaticamente.
         </div>
       </div>
@@ -986,7 +1009,7 @@
 
     <!-- FORMULÁRIO PRINCIPAL -->
     <div id="formContainer">
-      
+
       <!-- CARD 1: IDENTIFICAÇÃO -->
       <div class="card">
         <h2 class="card-title">
@@ -1060,7 +1083,8 @@
     <div id="sucessoContainer" class="card sucesso-container">
       <div class="sucesso-icon">✓</div>
       <h2>Agendamento Confirmado!</h2>
-      <p>Você receberá um e-mail com os detalhes do seu agendamento.</p>
+      <!-- FIX: mensagem condicional ao envio de e-mail é controlada pelo JS -->
+      <p id="mensagemSucesso">Você receberá um e-mail com os detalhes do seu agendamento.</p>
       <button type="button" class="btn btn-primary" onclick="novoAgendamento()">
         Fazer Novo Agendamento
       </button>
@@ -1068,14 +1092,16 @@
 
   </main>
 
+  <!-- FIX: ano dinâmico -->
   <footer class="footer">
-    <p>© 2025 Colégio Sinodal do Salvador · Todos os direitos reservados</p>
+    <p>© <span id="ano-footer"></span> Colégio Sinodal do Salvador · Todos os direitos reservados</p>
   </footer>
 
   <!-- MODAL LISTA DE ESPERA -->
+  <!-- FIX: atributos ARIA adicionados -->
   <div id="modalEspera" class="modal-overlay" onclick="fecharModalEspera(event)">
-    <div class="modal" onclick="event.stopPropagation()">
-      <h3>⏳ Entrar na Lista de Espera</h3>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModalEspera" onclick="event.stopPropagation()">
+      <h3 id="tituloModalEspera">⏳ Entrar na Lista de Espera</h3>
       <p>Este horário já foi reservado por outra pessoa. Mas você pode entrar na lista de espera!</p>
       <div class="modal-info">
         <div><strong>Professor(a):</strong> <span id="modalProfessor"></span></div>
@@ -1095,42 +1121,57 @@
   </div>
 
   <!-- MODAL CONSULTA / CANCELAMENTO -->
+  <!-- FIX: atributos ARIA adicionados -->
   <div id="modalConsulta" class="modal-overlay" onclick="fecharModalConsulta(event)">
-    <div class="modal" style="max-width: 500px;" onclick="event.stopPropagation()">
-      <h3>Meus Agendamentos</h3>
+    <div class="modal" style="max-width: 500px;" role="dialog" aria-modal="true" aria-labelledby="tituloModalConsulta" onclick="event.stopPropagation()">
+      <h3 id="tituloModalConsulta">Meus Agendamentos</h3>
       <p>Digite seu e-mail para consultar e cancelar seus agendamentos.</p>
-      
+
       <div class="consulta-input-group">
-        <input type="email" id="emailConsulta" placeholder="seu@email.com">
+        <!-- FIX: Enter dispara a busca -->
+        <input type="email" id="emailConsulta" placeholder="seu@email.com"
+               onkeydown="if(event.key === 'Enter') buscarAgendamentos()">
         <button type="button" class="btn btn-primary" onclick="buscarAgendamentos()">Buscar</button>
       </div>
-      
+
       <div id="resultadoConsulta">
         <!-- Preenchido via JavaScript -->
       </div>
-      
+
       <div style="margin-top: 1.5rem; text-align: right;">
         <button type="button" class="btn btn-secondary" onclick="fecharModalConsulta()">Fechar</button>
       </div>
     </div>
   </div>
 
+  <!-- FIX: Modal de confirmação customizado (substitui confirm() nativo) -->
+  <div id="modalConfirmacao" class="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModalConfirmacao" onclick="event.stopPropagation()">
+      <h3 id="tituloModalConfirmacao">Confirmar cancelamento</h3>
+      <p id="textoModalConfirmacao"></p>
+      <div class="modal-buttons">
+        <button type="button" class="btn btn-secondary" id="btnConfirmacaoNao">Não, voltar</button>
+        <button type="button" class="btn btn-perigo" id="btnConfirmacaoSim">Sim, cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ==================== CONFIGURAÇÃO ====================
-    
-    // ⚠️ SUBSTITUA PELA URL DO SEU APPS SCRIPT PUBLICADO
+
     const API_URL = 'https://script.google.com/macros/s/AKfycbw-jX0CwxmpLz3LRtyUbK53C4QJRRrpp3Rwy3wYgsOMlzDLt_8TL3uamPeT-PcudcYj/exec';
 
     // ==================== ESTADO DA APLICAÇÃO ====================
-    
+
     let state = {
       nome: '',
       email: '',
       areaSelecionada: null,
-      agendamentos: [], // { professor, horario, horarioTexto, area }
-      listaEspera: [],  // { professor, horario, horarioTexto, area }
+      agendamentos: [],   // { professor, horario, horarioTexto, area }
+      listaEspera: [],    // { professor, horario, horarioTexto, area }
       disponibilidade: {},
       horarios: {},
+      listaProfessores: [], // FIX: ordem original preservada
       modalEspera: {
         professor: null,
         horario: null,
@@ -1139,60 +1180,85 @@
       }
     };
 
+    // ==================== UTILITÁRIOS ====================
+
+    // FIX: escapeHTML previne XSS ao inserir dados da API via innerHTML
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // FIX: modal de confirmação customizado (substitui confirm() bloqueante e inacessível)
+    function confirmarAcao(texto) {
+      return new Promise((resolve) => {
+        document.getElementById('textoModalConfirmacao').textContent = texto;
+        const modal = document.getElementById('modalConfirmacao');
+        modal.classList.add('show');
+        document.getElementById('btnConfirmacaoSim').focus();
+
+        function responder(sim) {
+          modal.classList.remove('show');
+          document.getElementById('btnConfirmacaoSim').removeEventListener('click', onSim);
+          document.getElementById('btnConfirmacaoNao').removeEventListener('click', onNao);
+          resolve(sim);
+        }
+
+        function onSim() { responder(true); }
+        function onNao() { responder(false); }
+
+        document.getElementById('btnConfirmacaoSim').addEventListener('click', onSim);
+        document.getElementById('btnConfirmacaoNao').addEventListener('click', onNao);
+      });
+    }
+
     // ==================== INICIALIZAÇÃO ====================
-    
+
     document.addEventListener('DOMContentLoaded', async () => {
+      // FIX: ano dinâmico no rodapé
+      document.getElementById('ano-footer').textContent = new Date().getFullYear();
+
       await carregarHorarios();
       await carregarAreas();
-      
-      // Listeners para validação
+
       document.getElementById('nome').addEventListener('input', validarFormulario);
       document.getElementById('email').addEventListener('input', validarFormulario);
     });
 
     // ==================== TOGGLE COMO FUNCIONA ====================
-    
+
+    // FIX: lógica simplificada — sem setTimeout, funciona com transição CSS
     function toggleComoFunciona() {
       const conteudo = document.getElementById('conteudoComoFunciona');
       const seta = document.getElementById('setaComoFunciona');
-      
-      if (conteudo.classList.contains('collapsed')) {
-        conteudo.classList.remove('collapsed');
-        conteudo.style.maxHeight = conteudo.scrollHeight + 'px';
-        seta.style.transform = 'rotate(0deg)';
-      } else {
-        conteudo.style.maxHeight = conteudo.scrollHeight + 'px';
-        setTimeout(() => {
-          conteudo.classList.add('collapsed');
-          conteudo.style.maxHeight = '0';
-        }, 10);
-        seta.style.transform = 'rotate(-90deg)';
-      }
+      const btn = conteudo.previousElementSibling;
+      const isCollapsed = conteudo.classList.contains('collapsed');
+
+      conteudo.classList.toggle('collapsed');
+      seta.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
+      btn.setAttribute('aria-expanded', String(isCollapsed));
     }
 
-    // ==================== FUNÇÕES DE API (CORRIGIDO PARA CORS) ====================
-    
+    // ==================== FUNÇÕES DE API ====================
+
     async function apiCall(acao, params = {}) {
       try {
-        // Monta URL com todos os parâmetros
         const url = new URL(API_URL);
         url.searchParams.append('acao', acao);
-        
         Object.entries(params).forEach(([key, value]) => {
           url.searchParams.append(key, value);
         });
-        
-        console.log('Chamando API:', url.toString());
-        
-        // Usa fetch simples sem headers customizados (evita preflight CORS)
+
         const response = await fetch(url.toString(), {
           method: 'GET',
           redirect: 'follow'
         });
-        
+
         const text = await response.text();
-        console.log('Resposta bruta:', text);
-        
+
         try {
           return JSON.parse(text);
         } catch (e) {
@@ -1205,14 +1271,13 @@
       }
     }
 
-    // Para enviar dados complexos, usamos GET com dados encodados na URL
     async function apiCallComDados(acao, dados) {
       const dadosEncoded = encodeURIComponent(JSON.stringify(dados));
       return await apiCall(acao, { dados: dadosEncoded });
     }
 
     // ==================== CARREGAMENTO DE DADOS ====================
-    
+
     async function carregarHorarios() {
       const result = await apiCall('getHorarios');
       if (result.sucesso) {
@@ -1223,17 +1288,17 @@
     async function carregarAreas() {
       const container = document.getElementById('areasContainer');
       const result = await apiCall('getAreas');
-      
+
       if (result.sucesso) {
         container.innerHTML = result.areas.map(area => `
-          <button type="button" class="area-btn" onclick="selecionarArea('${area}')">
-            ${area}
+          <button type="button" class="area-btn" onclick="selecionarArea('${escapeHTML(area)}')">
+            ${escapeHTML(area)}
           </button>
         `).join('');
       } else {
         container.innerHTML = `
           <p style="color: var(--erro); text-align: center;">
-            Erro ao carregar áreas: ${result.erro || 'Verifique a URL da API'}
+            Erro ao carregar áreas: ${escapeHTML(result.erro || 'Verifique a URL da API')}
           </p>
           <p style="text-align: center; margin-top: 1rem;">
             <button class="btn btn-secondary" onclick="carregarAreas()">Tentar novamente</button>
@@ -1243,17 +1308,19 @@
     }
 
     async function selecionarArea(area) {
-      // Atualizar visual
-      document.querySelectorAll('.area-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.textContent.trim() === area);
+      // FIX: desabilitar todos os botões de área durante o carregamento
+      const botoesArea = document.querySelectorAll('.area-btn');
+      botoesArea.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent.trim() === area) {
+          btn.classList.add('active');
+          btn.textContent = '⏳ ' + area;
+        }
       });
-      
+
       state.areaSelecionada = area;
-      
-      // Mostrar nome da área no badge
       document.getElementById('areaAtual').textContent = area;
-      
-      // Mostrar loading
+
       const container = document.getElementById('professoresContainer');
       container.innerHTML = `
         <div class="loading">
@@ -1262,50 +1329,51 @@
         </div>
       `;
       document.getElementById('professoresCard').classList.add('show');
-      
-      // Buscar disponibilidade
+
       const result = await apiCall('getDisponibilidade', { area: area });
-      
+
+      // FIX: reabilitar botões após carregamento
+      botoesArea.forEach(btn => {
+        btn.disabled = false;
+        if (btn.textContent.includes('⏳')) {
+          btn.textContent = area;
+        }
+      });
+
       if (result.sucesso) {
         state.disponibilidade = result.disponibilidade;
         state.horarios = result.horarios;
+        // FIX: salvar lista ordenada de professores no estado
+        state.listaProfessores = result.professores;
         renderizarProfessores(result.professores, result.disponibilidade);
-        
-        // Mostrar resumo se já houver agendamentos
+
         if (state.agendamentos.length > 0) {
           document.getElementById('resumoCard').classList.add('show');
         }
       } else {
-        container.innerHTML = `<p style="color: var(--erro); text-align: center;">Erro: ${result.erro}</p>`;
+        container.innerHTML = `<p style="color: var(--erro); text-align: center;">Erro: ${escapeHTML(result.erro)}</p>`;
       }
     }
 
     function voltarParaAreas() {
-      // Esconder card de professores
       document.getElementById('professoresCard').classList.remove('show');
-      
-      // Limpar seleção de área (visual)
       document.querySelectorAll('.area-btn').forEach(btn => btn.classList.remove('active'));
-      
-      // Limpar estado da área atual (mas manter agendamentos!)
       state.areaSelecionada = null;
       state.disponibilidade = {};
-      
-      // Rolar para as áreas
+      state.listaProfessores = [];
       document.getElementById('areasContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     // ==================== RENDERIZAÇÃO ====================
-    
+
     function renderizarProfessores(professores, disponibilidade) {
       const container = document.getElementById('professoresContainer');
-      
+
       if (professores.length === 0) {
         container.innerHTML = `<p style="text-align: center; color: #a0aec0;">Nenhum professor cadastrado nesta área.</p>`;
         return;
       }
-      
-      // Legenda
+
       let html = `
         <div class="legenda">
           <div class="legenda-item">
@@ -1329,7 +1397,7 @@
           💡 <strong>Dica:</strong> Horários em vermelho estão ocupados, mas você pode clicar neles para entrar na lista de espera!
         </p>
       `;
-      
+
       html += professores.map(prof => {
         const horarios = Object.entries(state.horarios).map(([letra, horarioTexto]) => {
           const info = disponibilidade[prof] ? disponibilidade[prof][letra] : null;
@@ -1337,31 +1405,39 @@
           const naEspera = state.listaEspera.some(a => a.professor === prof && a.horario === letra);
           const disponivel = info ? info.disponivel : true;
           const qtdEspera = info ? (info.listaEspera || 0) : 0;
-          
+
+          // FIX: data-attributes em vez de strings em onclick (seguro para nomes com apóstrofe etc.)
           if (selecionado) {
             return `
-              <button type="button" 
-                class="horario-btn selected" 
-                onclick="toggleHorario('${prof.replace(/'/g, "\\'")}', '${letra}', '${horarioTexto}')">
-                ${horarioTexto}
+              <button type="button"
+                class="horario-btn selected"
+                data-prof="${escapeHTML(prof)}"
+                data-horario="${escapeHTML(letra)}"
+                data-texto="${escapeHTML(horarioTexto)}"
+                onclick="toggleHorario(this)">
+                ${escapeHTML(horarioTexto)}
               </button>
             `;
           } else if (naEspera) {
             return `
               <div class="horario-ocupado">
                 <button type="button" class="horario-btn na-espera" disabled>
-                  ${horarioTexto}
+                  ${escapeHTML(horarioTexto)}
                 </button>
               </div>
             `;
           } else if (!disponivel) {
             return `
               <div class="horario-ocupado">
-                <button type="button" 
-                  class="horario-btn ocupado" 
-                  onclick="abrirModalEspera('${prof.replace(/'/g, "\\'")}', '${letra}', '${horarioTexto}', ${qtdEspera})"
+                <button type="button"
+                  class="horario-btn ocupado"
+                  data-prof="${escapeHTML(prof)}"
+                  data-horario="${escapeHTML(letra)}"
+                  data-texto="${escapeHTML(horarioTexto)}"
+                  data-espera="${qtdEspera}"
+                  onclick="abrirModalEspera(this)"
                   title="Clique para entrar na lista de espera">
-                  ${horarioTexto}
+                  ${escapeHTML(horarioTexto)}
                   <span class="icone-espera">⏳</span>
                 </button>
                 ${qtdEspera > 0 ? `<span class="badge-espera">${qtdEspera}</span>` : ''}
@@ -1369,99 +1445,96 @@
             `;
           } else {
             return `
-              <button type="button" 
-                class="horario-btn" 
-                onclick="toggleHorario('${prof.replace(/'/g, "\\'")}', '${letra}', '${horarioTexto}')">
-                ${horarioTexto}
+              <button type="button"
+                class="horario-btn"
+                data-prof="${escapeHTML(prof)}"
+                data-horario="${escapeHTML(letra)}"
+                data-texto="${escapeHTML(horarioTexto)}"
+                onclick="toggleHorario(this)">
+                ${escapeHTML(horarioTexto)}
               </button>
             `;
           }
         }).join('');
-        
+
         const temSelecao = state.agendamentos.some(a => a.professor === prof);
-        
+
         return `
           <div class="professor-card ${temSelecao ? 'has-selection' : ''}">
-            <div class="professor-nome">${prof}</div>
+            <div class="professor-nome">${escapeHTML(prof)}</div>
             <div class="horarios-grid">
               ${horarios}
             </div>
           </div>
         `;
       }).join('');
-      
+
       container.innerHTML = html;
-      
-      // Mostrar card de resumo
       document.getElementById('resumoCard').classList.add('show');
       atualizarResumo();
     }
 
     function atualizarResumo() {
       const container = document.getElementById('resumoLista');
-      
+
       const temAgendamentos = state.agendamentos.length > 0;
       const temEspera = state.listaEspera.length > 0;
-      
+
       if (!temAgendamentos && !temEspera) {
         container.innerHTML = `<div class="resumo-vazio">Nenhum horário selecionado</div>`;
         document.getElementById('resumoCard').classList.remove('show');
       } else {
         let html = '';
-        
-        // Agendamentos confirmados
+
         if (temAgendamentos) {
-          // Agrupar por área
           const porArea = {};
           state.agendamentos.forEach(ag => {
             const area = ag.area || 'Outros';
             if (!porArea[area]) porArea[area] = [];
             porArea[area].push(ag);
           });
-          
+
           html += '<div style="font-weight: 600; color: var(--sucesso); margin-bottom: 0.5rem;">✓ Agendamentos</div>';
-          
+
           Object.entries(porArea).forEach(([area, ags]) => {
-            html += `<div class="resumo-area-header">${area}</div>`;
+            html += `<div class="resumo-area-header">${escapeHTML(area)}</div>`;
             ags.forEach((ag) => {
               const globalIndex = state.agendamentos.findIndex(a => a.professor === ag.professor && a.horario === ag.horario);
               html += `
                 <div class="resumo-item">
                   <div class="resumo-info">
-                    <span class="resumo-professor">${ag.professor}</span>
-                    <span class="resumo-horario">🕐 ${ag.horarioTexto}</span>
+                    <span class="resumo-professor">${escapeHTML(ag.professor)}</span>
+                    <span class="resumo-horario">🕐 ${escapeHTML(ag.horarioTexto)}</span>
                   </div>
-                  <button type="button" class="btn-remover" onclick="removerAgendamento(${globalIndex})">✕</button>
+                  <button type="button" class="btn-remover" onclick="removerAgendamento(${globalIndex})" aria-label="Remover ${escapeHTML(ag.professor)}">✕</button>
                 </div>
               `;
             });
           });
         }
-        
-        // Lista de espera
+
         if (temEspera) {
           if (temAgendamentos) {
             html += '<div style="border-top: 2px solid var(--cinza-medio); margin: 1rem 0;"></div>';
           }
-          
+
           html += '<div style="font-weight: 600; color: var(--alerta); margin-bottom: 0.5rem;">⏳ Lista de Espera</div>';
-          
-          // Agrupar por área
+
           const porAreaEspera = {};
           state.listaEspera.forEach(ag => {
             const area = ag.area || 'Outros';
             if (!porAreaEspera[area]) porAreaEspera[area] = [];
             porAreaEspera[area].push(ag);
           });
-          
+
           Object.entries(porAreaEspera).forEach(([area, ags]) => {
-            html += `<div class="resumo-area-header">${area}</div>`;
+            html += `<div class="resumo-area-header">${escapeHTML(area)}</div>`;
             ags.forEach((ag) => {
               html += `
                 <div class="resumo-item" style="opacity: 0.8;">
                   <div class="resumo-info">
-                    <span class="resumo-professor">${ag.professor}</span>
-                    <span class="resumo-horario">🕐 ${ag.horarioTexto}</span>
+                    <span class="resumo-professor">${escapeHTML(ag.professor)}</span>
+                    <span class="resumo-horario">🕐 ${escapeHTML(ag.horarioTexto)}</span>
                   </div>
                   <span style="font-size: 0.75rem; color: var(--alerta);">aguardando</span>
                 </div>
@@ -1469,66 +1542,60 @@
             });
           });
         }
-        
+
         container.innerHTML = html;
         document.getElementById('resumoCard').classList.add('show');
       }
-      
+
       validarFormulario();
     }
 
     // ==================== INTERAÇÕES ====================
-    
-    function toggleHorario(professor, horario, horarioTexto) {
+
+    // FIX: recebe o elemento botão e lê os dados via dataset
+    function toggleHorario(btn) {
+      const professor = btn.dataset.prof;
+      const horario = btn.dataset.horario;
+      const horarioTexto = btn.dataset.texto;
+
       const index = state.agendamentos.findIndex(a => a.professor === professor && a.horario === horario);
-      
+
       if (index >= 0) {
-        // Remover
         state.agendamentos.splice(index, 1);
       } else {
-        // Adicionar (verificar se já tem horário com esse professor)
         const existente = state.agendamentos.findIndex(a => a.professor === professor);
         if (existente >= 0) {
-          state.agendamentos[existente] = { 
-            professor, 
-            horario, 
+          state.agendamentos[existente] = {
+            professor,
+            horario,
             horarioTexto,
-            area: state.areaSelecionada 
+            area: state.areaSelecionada
           };
         } else {
-          state.agendamentos.push({ 
-            professor, 
-            horario, 
+          state.agendamentos.push({
+            professor,
+            horario,
             horarioTexto,
-            area: state.areaSelecionada 
+            area: state.areaSelecionada
           });
         }
       }
-      
-      // Re-renderizar
-      if (state.areaSelecionada && Object.keys(state.disponibilidade).length > 0) {
-        renderizarProfessores(
-          Object.keys(state.disponibilidade), 
-          state.disponibilidade
-        );
+
+      // FIX: usa state.listaProfessores para preservar a ordem original
+      if (state.areaSelecionada && state.listaProfessores.length > 0) {
+        renderizarProfessores(state.listaProfessores, state.disponibilidade);
       }
-      
-      // Mostrar resumo
+
       document.getElementById('resumoCard').classList.add('show');
     }
 
     function removerAgendamento(index) {
       const removido = state.agendamentos[index];
       state.agendamentos.splice(index, 1);
-      
-      // Se estamos vendo a área do professor removido, re-renderizar
-      if (state.areaSelecionada && Object.keys(state.disponibilidade).length > 0) {
-        // Verificar se o professor removido está na área atual
+
+      if (state.areaSelecionada && state.listaProfessores.length > 0) {
         if (state.disponibilidade[removido.professor]) {
-          renderizarProfessores(
-            Object.keys(state.disponibilidade), 
-            state.disponibilidade
-          );
+          renderizarProfessores(state.listaProfessores, state.disponibilidade);
         } else {
           atualizarResumo();
         }
@@ -1539,36 +1606,33 @@
 
     function limparSelecao() {
       state.agendamentos = [];
-      
-      if (state.areaSelecionada && Object.keys(state.disponibilidade).length > 0) {
-        renderizarProfessores(
-          Object.keys(state.disponibilidade), 
-          state.disponibilidade
-        );
+
+      if (state.areaSelecionada && state.listaProfessores.length > 0) {
+        renderizarProfessores(state.listaProfessores, state.disponibilidade);
       }
-      
+
       atualizarResumo();
     }
 
     // ==================== VALIDAÇÃO ====================
-    
+
     function validarFormulario() {
       state.nome = document.getElementById('nome').value.trim();
       state.email = document.getElementById('email').value.trim();
-      
+
       const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email);
       const formValido = state.nome.length >= 3 && emailValido && state.agendamentos.length > 0;
-      
+
       document.getElementById('btnConfirmar').disabled = !formValido;
     }
 
     // ==================== CONFIRMAÇÃO ====================
-    
+
     async function confirmarAgendamento() {
       const btn = document.getElementById('btnConfirmar');
       btn.disabled = true;
       btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;margin-right:8px;border-width:2px;"></div> Processando...';
-      
+
       const dados = {
         nome: state.nome,
         email: state.email,
@@ -1577,15 +1641,21 @@
           horario: a.horario
         }))
       };
-      
-      // Usa GET com dados encodados (contorna CORS)
+
       const result = await apiCallComDados('agendar', dados);
-      
+
       if (result.sucesso) {
-        // Mostrar tela de sucesso
+        // FIX: mensagem de e-mail condicional ao resultado do servidor
+        const msgEl = document.getElementById('mensagemSucesso');
+        if (result.emailEnviado === false) {
+          msgEl.textContent = 'Agendamento registrado. Verifique seu e-mail em breve.';
+        } else {
+          msgEl.textContent = 'Você receberá um e-mail com os detalhes do seu agendamento.';
+        }
+
         document.getElementById('formContainer').style.display = 'none';
         document.getElementById('sucessoContainer').classList.add('show');
-        
+
         if (result.conflitos && result.conflitos.length > 0) {
           mostrarMensagem('alerta', `Alguns horários já estavam ocupados: ${result.conflitos.join(', ')}`);
         }
@@ -1597,73 +1667,70 @@
     }
 
     function novoAgendamento() {
-      // Resetar estado
       state.agendamentos = [];
       state.listaEspera = [];
       state.areaSelecionada = null;
       state.disponibilidade = {};
-      
-      // Resetar formulário
+      state.listaProfessores = [];
+
       document.getElementById('nome').value = '';
       document.getElementById('email').value = '';
-      
-      // Resetar visuais
+
       document.querySelectorAll('.area-btn').forEach(btn => btn.classList.remove('active'));
       document.getElementById('professoresCard').classList.remove('show');
       document.getElementById('resumoCard').classList.remove('show');
       document.getElementById('professoresContainer').innerHTML = '';
-      
-      // Mostrar formulário
+
       document.getElementById('formContainer').style.display = 'block';
       document.getElementById('sucessoContainer').classList.remove('show');
-      
-      // Esconder mensagem
       document.getElementById('mensagem').classList.remove('show');
     }
 
     // ==================== MENSAGENS ====================
-    
+
     function mostrarMensagem(tipo, texto) {
       const el = document.getElementById('mensagem');
       el.className = `mensagem ${tipo} show`;
-      
+
       const icons = { sucesso: '✓', erro: '✕', alerta: '⚠' };
       el.querySelector('.mensagem-icon').textContent = icons[tipo] || '';
       el.querySelector('.mensagem-texto').textContent = texto;
-      
-      // Auto-hide após 8 segundos
+
       setTimeout(() => {
         el.classList.remove('show');
       }, 8000);
     }
 
     // ==================== LISTA DE ESPERA ====================
-    
-    function abrirModalEspera(professor, horario, horarioTexto, qtdEspera) {
-      // Verificar se já preencheu nome e email
+
+    // FIX: recebe o elemento botão e lê os dados via dataset
+    function abrirModalEspera(btn) {
       state.nome = document.getElementById('nome').value.trim();
       state.email = document.getElementById('email').value.trim();
-      
+
       if (!state.nome || state.nome.length < 3) {
         mostrarMensagem('alerta', 'Preencha seu nome antes de entrar na lista de espera');
         document.getElementById('nome').focus();
         return;
       }
-      
+
       const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email);
       if (!emailValido) {
         mostrarMensagem('alerta', 'Preencha um e-mail válido antes de entrar na lista de espera');
         document.getElementById('email').focus();
         return;
       }
-      
-      // Salvar dados no state
+
+      const professor = btn.dataset.prof;
+      const horario = btn.dataset.horario;
+      const horarioTexto = btn.dataset.texto;
+      const qtdEspera = parseInt(btn.dataset.espera) || 0;
+
       state.modalEspera = { professor, horario, horarioTexto, qtdEspera };
-      
-      // Preencher modal
+
       document.getElementById('modalProfessor').textContent = professor;
       document.getElementById('modalHorario').textContent = horarioTexto;
-      
+
       const qtdEl = document.getElementById('modalQtdEspera');
       if (qtdEspera > 0) {
         qtdEl.textContent = `${qtdEspera} pessoa(s) já na lista de espera`;
@@ -1671,139 +1738,145 @@
       } else {
         qtdEl.style.display = 'none';
       }
-      
-      // Mostrar modal
+
       document.getElementById('modalEspera').classList.add('show');
+      // FIX: foco vai para o botão principal ao abrir o modal
+      document.getElementById('btnEntrarEspera').focus();
     }
-    
+
     function fecharModalEspera(event) {
       if (event && event.target !== event.currentTarget) return;
       document.getElementById('modalEspera').classList.remove('show');
     }
-    
+
     async function confirmarListaEspera() {
       const btn = document.getElementById('btnEntrarEspera');
       btn.disabled = true;
       btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;margin-right:8px;border-width:2px;"></div> Aguarde...';
-      
+
       const dados = {
         nome: state.nome,
         email: state.email,
         professor: state.modalEspera.professor,
         horario: state.modalEspera.horario
       };
-      
+
       const result = await apiCallComDados('entrarListaEspera', dados);
-      
+
       if (result.sucesso) {
-        // Adicionar ao estado local
         state.listaEspera.push({
           professor: state.modalEspera.professor,
           horario: state.modalEspera.horario,
           horarioTexto: state.modalEspera.horarioTexto,
           area: state.areaSelecionada
         });
-        
+
         fecharModalEspera();
         mostrarMensagem('sucesso', result.mensagem);
-        
-        // Re-renderizar para mostrar que está na lista
-        if (state.areaSelecionada && Object.keys(state.disponibilidade).length > 0) {
-          renderizarProfessores(
-            Object.keys(state.disponibilidade), 
-            state.disponibilidade
-          );
+
+        if (state.areaSelecionada && state.listaProfessores.length > 0) {
+          renderizarProfessores(state.listaProfessores, state.disponibilidade);
         }
       } else {
         mostrarMensagem('erro', result.erro);
       }
-      
+
       btn.disabled = false;
       btn.innerHTML = 'Entrar na Lista';
     }
 
     // ==================== CONSULTA E CANCELAMENTO ====================
-    
+
     function abrirConsulta() {
       document.getElementById('emailConsulta').value = '';
       document.getElementById('resultadoConsulta').innerHTML = '';
       document.getElementById('modalConsulta').classList.add('show');
+      // FIX: foco vai para o campo de e-mail ao abrir o modal
+      setTimeout(() => document.getElementById('emailConsulta').focus(), 50);
     }
-    
+
     function fecharModalConsulta(event) {
       if (event && event.target !== event.currentTarget) return;
       document.getElementById('modalConsulta').classList.remove('show');
     }
-    
+
     async function buscarAgendamentos() {
       const email = document.getElementById('emailConsulta').value.trim();
       const container = document.getElementById('resultadoConsulta');
-      
+
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         container.innerHTML = '<p style="color: var(--erro);">Digite um e-mail válido.</p>';
         return;
       }
-      
+
       container.innerHTML = '<div class="loading"><div class="spinner"></div><span>Buscando...</span></div>';
-      
+
       const result = await apiCall('getMeusAgendamentos', { email: email });
-      
+
       if (result.sucesso) {
         if (result.agendamentos.length === 0) {
           container.innerHTML = '<div class="sem-agendamentos">Nenhum agendamento encontrado para este e-mail.</div>';
         } else {
-          container.innerHTML = result.agendamentos.map(ag => `
-            <div class="agendamento-card" id="ag-${ag.professor.replace(/\s/g, '')}-${ag.horarioLetra}">
+          // FIX: usa índice no ID do card, evitando colisão por nomes parecidos
+          container.innerHTML = result.agendamentos.map((ag, idx) => `
+            <div class="agendamento-card" id="ag-card-${idx}">
               <div class="agendamento-info">
-                <h4>${ag.professor}</h4>
-                <p>Horário: ${ag.horario}</p>
+                <h4>${escapeHTML(ag.professor)}</h4>
+                <p>Horário: ${escapeHTML(ag.horario)}</p>
               </div>
-              <button type="button" class="btn-cancelar" onclick="cancelarMeuAgendamento('${email}', '${ag.professor.replace(/'/g, "\\'")}', '${ag.horarioLetra}')">
+              <button type="button" class="btn-cancelar"
+                data-email="${escapeHTML(email)}"
+                data-prof="${escapeHTML(ag.professor)}"
+                data-horario="${escapeHTML(ag.horarioLetra)}"
+                data-idx="${idx}"
+                onclick="cancelarMeuAgendamento(this)">
                 Cancelar
               </button>
             </div>
           `).join('');
         }
       } else {
-        container.innerHTML = `<p style="color: var(--erro);">Erro: ${result.erro}</p>`;
+        container.innerHTML = `<p style="color: var(--erro);">Erro: ${escapeHTML(result.erro)}</p>`;
       }
     }
-    
-    async function cancelarMeuAgendamento(email, professor, horario) {
-      if (!confirm(`Tem certeza que deseja cancelar o agendamento com ${professor}?`)) {
-        return;
-      }
-      
-      const cardId = `ag-${professor.replace(/\s/g, '')}-${horario}`;
-      const card = document.getElementById(cardId);
-      const btn = card.querySelector('.btn-cancelar');
-      
+
+    // FIX: usa data-attributes e modal de confirmação customizado
+    async function cancelarMeuAgendamento(btn) {
+      const email = btn.dataset.email;
+      const professor = btn.dataset.prof;
+      const horario = btn.dataset.horario;
+      const idx = btn.dataset.idx;
+
+      const confirmado = await confirmarAcao(`Tem certeza que deseja cancelar o agendamento com ${professor}?`);
+      if (!confirmado) return;
+
+      const card = document.getElementById(`ag-card-${idx}`);
+
       btn.disabled = true;
       btn.textContent = 'Cancelando...';
-      
-      const result = await apiCall('cancelarAgendamento', { 
-        email: email, 
-        professor: professor, 
-        horario: horario 
+
+      const result = await apiCall('cancelarAgendamento', {
+        email: email,
+        professor: professor,
+        horario: horario
       });
-      
+
       if (result.sucesso) {
         card.style.opacity = '0.5';
         card.innerHTML = `
           <div class="agendamento-info">
-            <h4 style="text-decoration: line-through;">${professor}</h4>
+            <h4 style="text-decoration: line-through;">${escapeHTML(professor)}</h4>
             <p style="color: var(--sucesso);">Cancelado com sucesso</p>
           </div>
         `;
-        
-        // Atualizar a disponibilidade se estiver visualizando a mesma área
+
         if (state.areaSelecionada) {
           setTimeout(() => selecionarArea(state.areaSelecionada), 1000);
         }
       } else {
         btn.disabled = false;
         btn.textContent = 'Cancelar';
-        alert('Erro ao cancelar: ' + result.erro);
+        mostrarMensagem('erro', 'Erro ao cancelar: ' + result.erro);
       }
     }
   </script>
